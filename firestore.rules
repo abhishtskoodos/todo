@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isAdmin() {
+      return isSignedIn() && userDoc().data.role == 'admin';
+    }
+
+    function isTaskMember(task) {
+      return isSignedIn() && (
+        task.data.createdBy == request.auth.uid ||
+        request.auth.uid in task.data.assignedTo
+      );
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if false;
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isAdmin() || isTaskMember(resource);
+      allow delete: if isAdmin();
+
+      match /steps/{stepId} {
+        allow read: if isSignedIn();
+        allow create, update: if isAdmin() || isTaskMember(get(/databases/$(database)/documents/tasks/$(taskId)));
+        allow delete: if isAdmin();
+      }
+
+      match /conversations/{messageId} {
+        allow read: if isSignedIn();
+        allow create: if isAdmin() || isTaskMember(get(/databases/$(database)/documents/tasks/$(taskId)));
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+
+      match /activity_logs/{activityId} {
+        allow read: if isSignedIn();
+        allow create: if isAdmin() || isTaskMember(get(/databases/$(database)/documents/tasks/$(taskId)));
+        allow update, delete: if false;
+      }
+    }
+  }
+}
