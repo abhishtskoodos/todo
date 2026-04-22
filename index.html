@@ -3,140 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Firebase Task & Workflow Manager</title>
+    <title>Firebase Todo List</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="topbar">
-      <h1>Task & Workflow Manager</h1>
-      <div id="auth-badge" class="auth-badge"></div>
-    </header>
+    <main class="app">
+      <h1>Todo List</h1>
 
-    <section id="auth-view" class="panel auth-view">
-      <h2>Sign in</h2>
-      <form id="login-form" class="grid-form">
-        <input id="login-email" type="email" placeholder="Email" required />
-        <input id="login-password" type="password" placeholder="Password" required />
-        <div class="row gap">
-          <button type="submit">Login</button>
-          <button id="signup-btn" type="button" class="secondary">Sign up</button>
-        </div>
+      <form id="todo-form" class="todo-form">
+        <label for="todo-input" class="sr-only">New todo</label>
+        <input id="todo-input" name="todo" type="text" placeholder="Add a task..." required />
+        <button type="submit">Add</button>
       </form>
-    </section>
 
-    <main id="app-view" class="app hidden">
-      <section class="toolbar panel">
-        <div class="row wrap gap">
-          <button id="new-task-btn">New Task</button>
-          <button id="toggle-view-btn" class="secondary">Switch to Table View</button>
-          <label class="checkbox-row"><input id="my-tasks-toggle" type="checkbox" /> My assigned tasks only</label>
-        </div>
-        <button id="logout-btn" class="secondary">Logout</button>
-      </section>
-
-      <section id="board-view" class="board"></section>
-
-      <section id="table-view" class="panel hidden">
-        <h3>Task Grid</h3>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Difficulty</th>
-                <th>Assigned</th>
-                <th>Progress</th>
-              </tr>
-            </thead>
-            <tbody id="task-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <aside id="task-detail" class="detail panel hidden">
-        <div class="row between">
-          <h3 id="detail-title">Task</h3>
-          <button id="close-detail" class="secondary">Close</button>
-        </div>
-        <div class="tabs">
-          <button class="tab active" data-tab="description">Description</button>
-          <button class="tab" data-tab="steps">Steps</button>
-          <button class="tab" data-tab="conversations">Conversations</button>
-          <button class="tab" data-tab="activity">Activity Log</button>
-        </div>
-
-        <section class="tab-panel" data-panel="description">
-          <p id="detail-description"></p>
-          <ul id="detail-metadata" class="metadata"></ul>
-        </section>
-
-        <section class="tab-panel hidden" data-panel="steps">
-          <form id="add-step-form" class="stack gap-sm">
-            <input id="step-name" placeholder="Step name" required />
-            <textarea id="step-description" rows="2" placeholder="Description"></textarea>
-            <input id="step-estimate" placeholder="Estimated time (e.g. 2h)" />
-            <button type="submit">Add Step</button>
-          </form>
-          <ul id="steps-list" class="stack gap-sm"></ul>
-        </section>
-
-        <section class="tab-panel hidden" data-panel="conversations">
-          <form id="add-message-form" class="stack gap-sm">
-            <textarea id="message-text" rows="2" placeholder="Message (supports @mentions)"></textarea>
-            <select id="message-type">
-              <option value="comment">Comment</option>
-              <option value="update">Update</option>
-              <option value="blocker">Blocker</option>
-              <option value="decision">Decision</option>
-            </select>
-            <button type="submit">Send</button>
-          </form>
-          <ul id="conversations-list" class="stack gap-sm"></ul>
-        </section>
-
-        <section class="tab-panel hidden" data-panel="activity">
-          <ul id="activity-list" class="stack gap-sm"></ul>
-        </section>
-      </aside>
+      <ul id="todo-list" class="todo-list"></ul>
+      <p id="empty-state" class="empty-state">No todos yet. Add one above.</p>
     </main>
-
-    <dialog id="task-dialog">
-      <form id="new-task-form" method="dialog" class="stack gap-sm">
-        <h3>Create Task</h3>
-        <input id="task-title" placeholder="Title" required />
-        <textarea id="task-description" placeholder="Description" rows="3"></textarea>
-        <div class="row gap">
-          <select id="task-priority">
-            <option value="low">Low</option>
-            <option value="medium" selected>Medium</option>
-            <option value="high">High</option>
-          </select>
-          <select id="task-difficulty">
-            <option value="easy">Easy</option>
-            <option value="medium" selected>Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
-        <input id="task-tags" placeholder="Tags (comma separated)" />
-        <input id="task-assigned" placeholder="Assigned user IDs (comma separated)" />
-        <div class="row gap">
-          <button type="submit">Create</button>
-          <button id="cancel-task-btn" type="button" class="secondary">Cancel</button>
-        </div>
-      </form>
-    </dialog>
-
-    <template id="kanban-column-template">
-      <section class="column panel" data-status="">
-        <header class="row between">
-          <h3></h3>
-          <button class="secondary load-more" type="button">Load more</button>
-        </header>
-        <ul class="task-list drop-zone"></ul>
-      </section>
-    </template>
 
     <script type="module" src="app.js"></script>
   </body>
